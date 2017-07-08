@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.porto.isabel.flickrimageapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
@@ -17,6 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="FLICKR_API_KEY"
+            android:value="@string/flickr_api_key" />
+
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.porto.isabel.flickrimageapp.searchimages.di;
 
+import com.porto.isabel.flickrimageapp.network.FlickrApi;
 import com.porto.isabel.flickrimageapp.searchimages.domain.SearchImagesInteractor;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.SearchImagesActivity;
 import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
@@ -36,7 +37,7 @@ public class SearchImagesModule {
 
     @Provides
     @SearchImagesScope
-    public SearchImagesContract.InteractorContract provideInteractor() {
-        return new SearchImagesInteractor();
+    public SearchImagesContract.InteractorContract provideInteractor(FlickrApi flickrApi) {
+        return new SearchImagesInteractor(flickrApi);
     }
 }

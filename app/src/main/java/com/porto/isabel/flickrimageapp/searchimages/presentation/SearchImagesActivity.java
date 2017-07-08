@@ -2,10 +2,12 @@ package com.porto.isabel.flickrimageapp.searchimages.presentation;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.porto.isabel.flickrimageapp.AppApplication;
 import com.porto.isabel.flickrimageapp.R;
 import com.porto.isabel.flickrimageapp.di.AppComponent;
+import com.porto.isabel.flickrimageapp.model.flickr.Photos;
 import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
 import com.porto.isabel.flickrimageapp.searchimages.di.DaggerSearchImagesComponent;
 import com.porto.isabel.flickrimageapp.searchimages.di.SearchImagesModule;
@@ -27,5 +29,10 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
         setContentView(R.layout.activity_main);
         mPresenter.onCreate();
+    }
+
+    @Override
+    public void showPhotos(Photos photos) {
+        Log.d("TAG", photos.toString());
     }
 }
