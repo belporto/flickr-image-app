@@ -2,7 +2,6 @@ package com.porto.isabel.flickrimageapp.di;
 
 import android.content.Context;
 
-
 import com.porto.isabel.flickrimageapp.network.FlickrApi;
 
 import dagger.Module;

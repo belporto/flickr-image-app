@@ -23,7 +23,7 @@ public class Photos implements Parcelable {
     int total;
 
     @SerializedName("photo")
-    List<Photo> photoList;
+    List<Photo> photos;
 
 
     @Override
@@ -37,7 +37,7 @@ public class Photos implements Parcelable {
         dest.writeInt(this.pages);
         dest.writeInt(this.perPage);
         dest.writeInt(this.total);
-        dest.writeTypedList(this.photoList);
+        dest.writeTypedList(this.photos);
     }
 
     public Photos() {
@@ -48,7 +48,7 @@ public class Photos implements Parcelable {
         this.pages = in.readInt();
         this.perPage = in.readInt();
         this.total = in.readInt();
-        this.photoList = in.createTypedArrayList(Photo.CREATOR);
+        this.photos = in.createTypedArrayList(Photo.CREATOR);
     }
 
     public static final Creator<Photos> CREATOR = new Creator<Photos>() {
@@ -62,4 +62,8 @@ public class Photos implements Parcelable {
             return new Photos[size];
         }
     };
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
 }

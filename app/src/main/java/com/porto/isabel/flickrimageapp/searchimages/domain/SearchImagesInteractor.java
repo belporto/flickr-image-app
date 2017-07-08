@@ -13,12 +13,12 @@ public class SearchImagesInteractor implements SearchImagesContract.InteractorCo
 
     private FlickrApi mFlickrApi;
 
-    public SearchImagesInteractor(FlickrApi flickrApi){
+    public SearchImagesInteractor(FlickrApi flickrApi) {
         mFlickrApi = flickrApi;
     }
 
     @Override
-    public Observable<Photos> getPhotos(String searchString){
+    public Observable<Photos> getPhotos(String searchString) {
         return mFlickrApi.getPhotos(searchString).map(PhotosResult::getPhotos);
     }
 

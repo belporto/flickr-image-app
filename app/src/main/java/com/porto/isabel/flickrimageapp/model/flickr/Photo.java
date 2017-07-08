@@ -81,4 +81,20 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+
+    public Integer getFarm() {
+        return farm;
+    }
+
+    public String getServer() {
+        return server;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
 }

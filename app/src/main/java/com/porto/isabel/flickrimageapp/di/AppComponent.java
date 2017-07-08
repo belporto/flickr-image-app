@@ -9,7 +9,7 @@ import dagger.Component;
 
 @AppScope
 @Component(modules = {
-        AppModule.class,  NetworkModule.class
+        AppModule.class, NetworkModule.class
 })
 public interface AppComponent {
 
