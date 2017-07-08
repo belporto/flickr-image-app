@@ -24,6 +24,7 @@ public class SearchImagesAdapter extends RecyclerView.Adapter<SearchImagesAdapte
     public SearchImagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photos_grid_item, parent, false);
+
         return new SearchImagesViewHolder(view);
     }
 
