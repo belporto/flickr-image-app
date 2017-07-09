@@ -33,6 +33,9 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <provider android:name=".searchimages.presentation.provider.SearchImagesSuggestionProvider"
+            android:authorities="com.porto.isabel.flickrimageapp.searchimages.presentation.provider.SearchImagesSuggestionProvider" />
+
         <meta-data
             android:name="FLICKR_API_KEY"
             android:value="@string/flickr_api_key" />
