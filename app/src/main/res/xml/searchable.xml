@@ -3,5 +3,4 @@
     android:hint="@string/search_hint"
     android:label="@string/app_name"
     android:searchSuggestAuthority="com.porto.isabel.flickrimageapp.searchimages.presentation.provider.SearchImagesSuggestionProvider"
-    android:searchSuggestSelection=" ?"
-    />
+    android:searchSuggestSelection=" ?" />
