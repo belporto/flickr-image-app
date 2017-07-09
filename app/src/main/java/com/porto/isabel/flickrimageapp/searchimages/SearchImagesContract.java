@@ -19,6 +19,12 @@ public class SearchImagesContract {
     public interface ViewContract {
 
         void showPhotos(Photos photos);
+
+        void showEmptyView();
+
+        void showError();
+
+        void showProgress();
     }
 
     public interface InteractorContract {

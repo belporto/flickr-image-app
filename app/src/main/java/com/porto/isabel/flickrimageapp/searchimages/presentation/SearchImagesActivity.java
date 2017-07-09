@@ -10,9 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.porto.isabel.flickrimageapp.AppApplication;
 import com.porto.isabel.flickrimageapp.R;
@@ -35,6 +36,9 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
     private RecyclerView mRecyclerView;
     private SearchImagesAdapter mSearchImagesAdapter;
+    private View mEmptyView;
+    private View mErrorView;
+    private ProgressBar mLoading;
 
 
     @Override
@@ -46,7 +50,6 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
                 new SearchImagesModule(this)).build().inject(this);
 
         setContentView(R.layout.activity_main);
-        mPresenter.onCreate();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.photos_toolbar);
         setSupportActionBar(toolbar);
@@ -61,6 +64,12 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
         mRecyclerView.setHasFixedSize(true);
         mSearchImagesAdapter = new SearchImagesAdapter();
         mRecyclerView.setAdapter(mSearchImagesAdapter);
+
+        mErrorView = findViewById(R.id.error);
+        mLoading = (ProgressBar) findViewById(R.id.loading);
+        mEmptyView = findViewById(R.id.empty);
+
+        mPresenter.onCreate();
 
         handleIntent(getIntent());
     }
@@ -100,8 +109,35 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
     @Override
     public void showPhotos(Photos photos) {
-        Log.d("TAG", photos.toString());
         mSearchImagesAdapter.setData(photos.getPhotos());
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+        mLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyView() {
+        mEmptyView.setVisibility(View.VISIBLE);
+        mErrorView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        mLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError() {
+        mLoading.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgress() {
+        mLoading.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
