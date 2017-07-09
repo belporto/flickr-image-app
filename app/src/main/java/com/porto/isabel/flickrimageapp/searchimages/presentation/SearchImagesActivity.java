@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,8 +59,8 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
         mRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
 
-        StaggeredGridLayoutManager layoutManager
-                = new StaggeredGridLayoutManager(NUMBER_OF_COLUMNS, 1);
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);

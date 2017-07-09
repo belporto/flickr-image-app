@@ -24,7 +24,10 @@ public class SearchImagesAdapter extends RecyclerView.Adapter<SearchImagesAdapte
     public SearchImagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photos_grid_item, parent, false);
+        int width = parent.getMeasuredWidth() / 3;
+        int height = width * 2 / 3;
 
+        view.setLayoutParams(new RecyclerView.LayoutParams(width, height));
         return new SearchImagesViewHolder(view);
     }
 
