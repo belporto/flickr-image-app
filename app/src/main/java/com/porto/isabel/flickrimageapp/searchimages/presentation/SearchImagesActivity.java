@@ -78,7 +78,7 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     SearchImagesSuggestionProvider.AUTHORITY, SearchImagesSuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
-            Log.d("TAG", query);
+            mPresenter.onQueryTextSubmit(query);
         }
     }
 
@@ -96,35 +96,6 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
                 searchManager.getSearchableInfo(getComponentName()));
 
         return true;
-
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//
-//        SearchView searchView = null;
-//        if (searchItem != null) {
-//            searchView = (SearchView) searchItem.getActionView();
-//        }
-//        if (searchView != null) {
-//            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//            searchView.setIconifiedByDefault(false);
-//
-//            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-//                @Override
-//                public boolean onQueryTextChange(String newText) {
-//                    Log.i("onQueryTextChange", newText);
-//
-//                    return true;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    Log.i("onQueryTextSubmit", query);
-//
-//                    return true;
-//                }
-//            };
-//            searchView.setOnQueryTextListener(queryTextListener);
-//        }
-//        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

@@ -12,6 +12,8 @@ public class SearchImagesContract {
         void onCreate();
 
         void onDestroy();
+
+        void onQueryTextSubmit(String query);
     }
 
     public interface ViewContract {

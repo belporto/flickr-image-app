@@ -26,17 +26,20 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
 
     @Override
     public void onCreate() {
-        compositeSubscription.add(subscribePhotos());
-    }
 
-    private Subscription subscribePhotos() {
-        return mInteractor.getPhotos("kitten").observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io()).subscribe(mView::showPhotos,
-                        throwable -> Log.e("TAG", "", throwable));
     }
 
     @Override
     public void onDestroy() {
         compositeSubscription.clear();
+    }
+
+    @Override
+    public void onQueryTextSubmit(String query) {
+        Subscription subscription = mInteractor.getPhotos(query).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()).subscribe(mView::showPhotos,
+                throwable -> Log.e("TAG", "", throwable));
+
+        compositeSubscription.add(subscription);
     }
 }
