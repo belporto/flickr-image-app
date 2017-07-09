@@ -14,6 +14,8 @@ public class SearchImagesContract {
         void onDestroy();
 
         void onQueryTextSubmit(String query);
+
+        void onLoadMore(int page);
     }
 
     public interface ViewContract {
@@ -25,11 +27,16 @@ public class SearchImagesContract {
         void showError();
 
         void showProgress();
+
+        void clearData();
+
     }
 
     public interface InteractorContract {
+        Observable<Photos> getPhotos(String searchString, int page);
 
+        String getQuery();
 
-        Observable<Photos> getPhotos(String searchString);
+        void setQuery(String query);
     }
 }

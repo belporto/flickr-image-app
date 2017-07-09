@@ -38,8 +38,13 @@ public class SearchImagesAdapter extends RecyclerView.Adapter<SearchImagesAdapte
         Picasso.with(mContext).load(uri).into(holder.mPosterImageView);
     }
 
-    public void setData(List<Photo> photos) {
-        mPhotos = photos;
+    public void clear() {
+        mPhotos.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<Photo> photos) {
+        mPhotos.addAll(photos);
         notifyDataSetChanged();
     }
 

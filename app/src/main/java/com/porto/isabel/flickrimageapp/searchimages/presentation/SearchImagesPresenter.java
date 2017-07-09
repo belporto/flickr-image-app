@@ -39,21 +39,35 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
 
     @Override
     public void onQueryTextSubmit(String query) {
-        Subscription subscription = Observable.just(null)
+        mView.clearData();
+        Subscription subscription = subscribeGetPhotos(query, 1);
+        mInteractor.setQuery(query);
+        compositeSubscription.add(subscription);
+    }
+
+    private Subscription subscribeGetPhotos(String query, int page) {
+        return Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnNext(aVoid -> {
-                    mView.showProgress();
+                    if (page == 1) {
+                        mView.showProgress();
+                    }
                 })
                 .observeOn(Schedulers.io())
-                .switchMap(aVoid -> mInteractor.getPhotos(query))
+                .switchMap(aVoid -> mInteractor.getPhotos(query, page))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mView::showPhotos,
                         throwable -> {
-                            Log.e(TAG, "Error getting movies", throwable);
+                            Log.e(TAG, "Error getting photos", throwable);
                             mView.showError();
                         }
                 );
+    }
 
+    @Override
+    public void onLoadMore(int page) {
+        Log.d(TAG, "On load more, page = " + page);
+        Subscription subscription = subscribeGetPhotos(mInteractor.getQuery(), page);
         compositeSubscription.add(subscription);
     }
 }

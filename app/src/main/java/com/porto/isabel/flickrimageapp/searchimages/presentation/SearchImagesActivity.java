@@ -23,6 +23,7 @@ import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
 import com.porto.isabel.flickrimageapp.searchimages.di.DaggerSearchImagesComponent;
 import com.porto.isabel.flickrimageapp.searchimages.di.SearchImagesModule;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.adapter.SearchImagesAdapter;
+import com.porto.isabel.flickrimageapp.searchimages.presentation.listener.EndlessRecyclerViewScrollListener;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.provider.SearchImagesSuggestionProvider;
 
 import javax.inject.Inject;
@@ -39,6 +40,7 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
     private View mEmptyView;
     private View mErrorView;
     private ProgressBar mLoading;
+    private EndlessRecyclerViewScrollListener mScrollListener;
 
 
     @Override
@@ -57,13 +59,21 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
         mRecyclerView = (RecyclerView) findViewById(R.id.photos_recycler_view);
 
-        RecyclerView.LayoutManager layoutManager
+        StaggeredGridLayoutManager layoutManager
                 = new StaggeredGridLayoutManager(NUMBER_OF_COLUMNS, 1);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mSearchImagesAdapter = new SearchImagesAdapter();
         mRecyclerView.setAdapter(mSearchImagesAdapter);
+
+        mScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                mPresenter.onLoadMore(page);
+            }
+        };
+        mRecyclerView.addOnScrollListener(mScrollListener);
 
         mErrorView = findViewById(R.id.error);
         mLoading = (ProgressBar) findViewById(R.id.loading);
@@ -109,7 +119,7 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
     @Override
     public void showPhotos(Photos photos) {
-        mSearchImagesAdapter.setData(photos.getPhotos());
+        mSearchImagesAdapter.addData(photos.getPhotos());
         mRecyclerView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.GONE);
         mErrorView.setVisibility(View.GONE);
@@ -139,6 +149,13 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
         mErrorView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
     }
+
+    @Override
+    public void clearData() {
+        mScrollListener.resetState();
+        mSearchImagesAdapter.clear();
+    }
+
 
     @Override
     protected void onDestroy() {

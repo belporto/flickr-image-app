@@ -35,8 +35,8 @@ public class FlickrApi {
         mService = retrofit.create(FlickrService.class);
     }
 
-    public Observable<PhotosResult> getPhotos(String searchString) {
-        return mService.getPhotos(getApiKey(), searchString);
+    public Observable<PhotosResult> getPhotos(String searchString, int page) {
+        return mService.getPhotos(getApiKey(), searchString, page);
     }
 
     public String getApiKey() {
