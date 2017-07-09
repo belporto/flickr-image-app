@@ -9,7 +9,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     RecyclerView.LayoutManager mLayoutManager;
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private int visibleThreshold = 5;
+    private int visibleThreshold = 20;
     // The current offset index of data you have loaded
     private int currentPage = 1;
     // The total number of items in the dataset after the last load
@@ -98,6 +98,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         this.previousTotalItemCount = 0;
         this.loading = true;
     }
+
+
+    public void resetState(int currentPage, int totalItemCount) {
+        this.currentPage = currentPage;
+        this.previousTotalItemCount = totalItemCount;
+        this.loading = false;
+    }
+
+
 
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);

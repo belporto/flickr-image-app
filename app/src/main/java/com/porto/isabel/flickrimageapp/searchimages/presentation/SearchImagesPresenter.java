@@ -1,9 +1,14 @@
 package com.porto.isabel.flickrimageapp.searchimages.presentation;
 
 
+import android.os.Bundle;
 import android.util.Log;
 
+import com.porto.isabel.flickrimageapp.model.flickr.Photo;
 import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -14,6 +19,9 @@ import rx.subscriptions.CompositeSubscription;
 public class SearchImagesPresenter implements SearchImagesContract.PresenterContract {
 
     private static final String TAG = SearchImagesPresenter.class.getSimpleName();
+    private static final String BUNDLE_QUERY = "BUNDLE_QUERY";
+    private static final String BUNDLE_IMAGES = "BUNDLE_IMAGES";
+    private static final String BUNDLE_PAGE = "BUNDLE_PAGE";
     private final SearchImagesContract.ViewContract mView;
     private final SearchImagesContract.InteractorContract mInteractor;
     private CompositeSubscription compositeSubscription;
@@ -27,9 +35,21 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
     }
 
     @Override
-    public void onCreate() {
-        mView.showEmptyView();
+    public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            List<Photo> photos = savedInstanceState.getParcelableArrayList(BUNDLE_IMAGES);
+            int page = savedInstanceState.getInt(BUNDLE_PAGE);
+            String query = savedInstanceState.getString(BUNDLE_QUERY);
+            if (photos != null && page > 0 && query != null) {
+                mInteractor.addPhotos(photos);
+                mInteractor.setPage(page);
+                mInteractor.setQuery(query);
 
+                mView.resetState(photos, page, photos.size());
+                return;
+            }
+        }
+        mView.showEmptyView();
     }
 
     @Override
@@ -40,6 +60,7 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
     @Override
     public void onQueryTextSubmit(String query) {
         mView.clearData();
+        mInteractor.clearCache();
         Subscription subscription = subscribeGetPhotos(query, 1);
         mInteractor.setQuery(query);
         compositeSubscription.add(subscription);
@@ -55,6 +76,8 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
                 })
                 .observeOn(Schedulers.io())
                 .switchMap(aVoid -> mInteractor.getPhotos(query, page))
+                .doOnNext(aVoid -> mInteractor.setPage(page))
+                .doOnNext(mInteractor::addPhotos)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mView::showPhotos,
                         throwable -> {
@@ -69,5 +92,12 @@ public class SearchImagesPresenter implements SearchImagesContract.PresenterCont
         Log.d(TAG, "On load more, page = " + page);
         Subscription subscription = subscribeGetPhotos(mInteractor.getQuery(), page);
         compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(BUNDLE_QUERY, mInteractor.getQuery());
+        outState.putParcelableArrayList(BUNDLE_IMAGES, new ArrayList<>(mInteractor.getPhotos()));
+        outState.putInt(BUNDLE_PAGE, mInteractor.getPage());
     }
 }

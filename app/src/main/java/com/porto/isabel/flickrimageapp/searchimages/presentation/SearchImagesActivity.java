@@ -18,13 +18,15 @@ import android.widget.ProgressBar;
 import com.porto.isabel.flickrimageapp.AppApplication;
 import com.porto.isabel.flickrimageapp.R;
 import com.porto.isabel.flickrimageapp.di.AppComponent;
-import com.porto.isabel.flickrimageapp.model.flickr.Photos;
+import com.porto.isabel.flickrimageapp.model.flickr.Photo;
 import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
 import com.porto.isabel.flickrimageapp.searchimages.di.DaggerSearchImagesComponent;
 import com.porto.isabel.flickrimageapp.searchimages.di.SearchImagesModule;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.adapter.SearchImagesAdapter;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.listener.EndlessRecyclerViewScrollListener;
 import com.porto.isabel.flickrimageapp.searchimages.presentation.provider.SearchImagesSuggestionProvider;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -79,7 +81,7 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
         mLoading = (ProgressBar) findViewById(R.id.loading);
         mEmptyView = findViewById(R.id.empty);
 
-        mPresenter.onCreate();
+        mPresenter.onCreate(savedInstanceState);
 
         handleIntent(getIntent());
     }
@@ -102,6 +104,12 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mPresenter.onSaveInstanceState(outState);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater = getMenuInflater();
@@ -118,12 +126,18 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
     }
 
     @Override
-    public void showPhotos(Photos photos) {
-        mSearchImagesAdapter.addData(photos.getPhotos());
+    public void showPhotos(List<Photo> photos) {
+        mSearchImagesAdapter.addData(photos);
         mRecyclerView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.GONE);
         mErrorView.setVisibility(View.GONE);
         mLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void resetState(List<Photo> photos, int currentPage, int totalItemCount) {
+        mScrollListener.resetState(currentPage, totalItemCount);
+        showPhotos(photos);
     }
 
     @Override

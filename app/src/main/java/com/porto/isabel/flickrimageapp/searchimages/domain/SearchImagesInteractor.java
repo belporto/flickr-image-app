@@ -1,10 +1,12 @@
 package com.porto.isabel.flickrimageapp.searchimages.domain;
 
 
-import com.porto.isabel.flickrimageapp.model.flickr.Photos;
+import com.porto.isabel.flickrimageapp.model.flickr.Photo;
 import com.porto.isabel.flickrimageapp.network.FlickrApi;
-import com.porto.isabel.flickrimageapp.network.PhotosResult;
 import com.porto.isabel.flickrimageapp.searchimages.SearchImagesContract;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 
@@ -15,13 +17,21 @@ public class SearchImagesInteractor implements SearchImagesContract.InteractorCo
 
     private String mQuery;
 
+    private int mPage;
+
+    private List<Photo> mPhotos = new ArrayList<>();
+
     public SearchImagesInteractor(FlickrApi flickrApi) {
         mFlickrApi = flickrApi;
     }
 
     @Override
-    public Observable<Photos> getPhotos(String searchString, int page) {
-        return mFlickrApi.getPhotos(searchString, page).map(PhotosResult::getPhotos);
+    public Observable<List<Photo>> getPhotos(String searchString, int page) {
+        if (searchString.equals(mQuery) && mPage == page) {
+            return Observable.just(mPhotos);
+        } else {
+            return mFlickrApi.getPhotos(searchString, page).map(photosResult -> photosResult.getPhotos().getPhotos());
+        }
     }
 
     @Override
@@ -32,5 +42,32 @@ public class SearchImagesInteractor implements SearchImagesContract.InteractorCo
     @Override
     public void setQuery(String query) {
         mQuery = query;
+    }
+
+    @Override
+    public int getPage() {
+        return mPage;
+    }
+
+    @Override
+    public void setPage(int page) {
+        mPage = page;
+    }
+
+    @Override
+    public void addPhotos(List<Photo> photos) {
+        mPhotos.addAll(photos);
+    }
+
+    @Override
+    public List<Photo> getPhotos() {
+        return mPhotos;
+    }
+
+    @Override
+    public void clearCache() {
+        mPhotos.clear();
+        mPage = 0;
+        mQuery = null;
     }
 }
