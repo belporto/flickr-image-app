@@ -103,4 +103,10 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
         Log.d("TAG", photos.toString());
         mSearchImagesAdapter.setData(photos.getPhotos());
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
 }
