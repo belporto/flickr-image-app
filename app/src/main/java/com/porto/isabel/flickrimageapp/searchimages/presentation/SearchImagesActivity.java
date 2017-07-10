@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 
 import com.porto.isabel.flickrimageapp.AppApplication;
@@ -43,6 +47,44 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
     private View mErrorView;
     private ProgressBar mLoading;
     private EndlessRecyclerViewScrollListener mScrollListener;
+
+    private ActionMode.Callback mActionModeSearchCallback = new ActionMode.Callback() {
+
+        private SearchView mSearchView;
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.getMenuInflater().inflate(R.menu.search_action_menu, menu);
+            mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+            mSearchView.setIconifiedByDefault(false);
+            SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            mSearchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getComponentName()));
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            mSearchView.setIconifiedByDefault(false);
+            mSearchView.setIconified(false);
+            mSearchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+
+            return true;
+        }
+
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+
+        }
+    };
 
 
     @Override
@@ -111,17 +153,21 @@ public class SearchImagesActivity extends AppCompatActivity implements SearchIma
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.image_menu, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_mode_search:
+                startSupportActionMode(mActionModeSearchCallback);
+                break;
+            default:
+                break;
+        }
         return true;
     }
 
